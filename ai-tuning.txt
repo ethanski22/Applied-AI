@@ -1,0 +1,61 @@
+If your AI feels:
+
+boring → increase temperature
+crazy → decrease temperature
+repetitive → increase repetition_penalty or frequency_penalty
+off-topic → lower presence_penalty
+
+
+For a more natural human conversation
+
+temperature=0.7,
+top_p=0.9,
+top_k=40,
+frequency_penalty=0.3,
+presence_penalty=0.2,
+repetition_penalty=1.1,
+
+
+NPC / personality-heavy
+
+temperature=0.85,
+top_p=0.92,
+top_k=50,
+frequency_penalty=0.2,
+presence_penalty=0.4,
+repetition_penalty=1.1,
+
+
+Smart assistant
+
+temperature=0.5,
+top_p=0.9,
+top_k=30,
+frequency_penalty=0.2,
+presence_penalty=0,
+repetition_penalty=1.05,
+
+
+
+# Temperature controls the randomness of the output. Higher values (e.g., 0.9) 
+# make the output more random, while lower values (e.g., 0.2) 
+# make it more focused and deterministic.
+temperature=0.7,
+# Top-p (nucleus sampling) and top-k are techniques to control the diversity of the output.
+# <.8 means more predictable, .9-.95 is more natural and save creativity
+# where 1 means there's no filtering
+top_p=0.9,
+# top-k limits the number of highest probability tokens to consider when generating the next token.
+# Limits choices to top k most likely tokens
+top_k=40,
+# Penalizes repeating the same word
+# 0 means no penalty, higher values increase the penalty for repeated tokens
+frequency_penalty=0.3,
+# Encourages introducing new topics by penalizing tokens that have already appeared in the text
+presence_penalty=0.2,
+# Penalizes the model for generating the same token multiple times in a row, 
+# which can help reduce repetitive outputs.
+repetition_penalty=1.1,
+# Minimum probability cutoff
+# 0 means no cutoff, higher values will filter out more low-probability tokens
+min_p=0,
