@@ -18,13 +18,5 @@
   {
     "role": "assistant",
     "content": "Nice to meet you, Ethan. My name is ARIA. ARIA is an artificial intelligence assistant, and I'm here to help you with any questions or tasks you might have."
-  },
-  {
-    "role": "user",
-    "content": "What is my name?"
-  },
-  {
-    "role": "assistant",
-    "content": "Your name is Ethan. I remember it from our previous conversation."
   }
 ]
