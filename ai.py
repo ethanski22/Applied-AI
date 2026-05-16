@@ -1,60 +1,105 @@
 import os
-from openai import OpenAI
-from dotenv import load_dotenv
-from memory import (
-  load_memory,
-  save_memory,
-  add_to_memory,
-  retrieve_memory
-)
+import json
+from pathlib import Path
 
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# Load environment variables from .env
 load_dotenv()
 
-memory = load_memory()
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-client = OpenAI(
-  base_url="https://api.featherless.ai/v1",
-  api_key=os.getenv("FEATHERLESS_API_KEY"),
-)
-
-# Ensure system message exists
-if not any(msg["role"] == "system" for msg in memory):
-  memory.insert(0, {
-    "role": "system",
-    "content": "You are a helpful assistant with long-term memory."
-  })
+# Path to memory file
+MEMORY_PATH = Path("memory/memory.json")
 
 
-msg_counter = len(memory)
+def load_memory():
+    """
+    Loads memory from memory/memory.json.
+    If the file doesn't exist, returns an empty list.
+    """
+    if not MEMORY_PATH.exists():
+        return []
 
-while True:
-  user_input = input("You: ")
+    with open(MEMORY_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-  # Retrieve relevant past memories
-  relevant_memories = retrieve_memory(user_input, n_results=5)
 
-  # Build context
-  messages = [memory[0]]  # system message
-  messages.extend(relevant_memories)
-  messages.append({"role": "user", "content": user_input})
+def save_memory(memory):
+    """
+    Saves memory back to memory/memory.json.
+    """
+    MEMORY_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-  response = client.chat.completions.create(
-    model='Qwen3-Embedding-4B-IC',
-    messages=messages,
-    temperature=0.8,
-  )
+    with open(MEMORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(memory, f, indent=4, ensure_ascii=False)
 
-  reply = response.choices[0].message.content
-  print("AI:", reply)
 
-  # Save to JSON memory
-  memory.append({"role": "user", "content": user_input})
-  memory.append({"role": "assistant", "content": reply})
-  save_memory(memory)
+def add_memory(role, content):
+    """
+    Adds a new memory entry.
+    """
+    memory = load_memory()
 
-  # Save to vector DB
-  add_to_memory("user", user_input, msg_counter)
-  msg_counter += 1
+    memory.append({
+        "role": role,
+        "content": content
+    })
 
-  add_to_memory("assistant", reply, msg_counter)
-  msg_counter += 1
+    save_memory(memory)
+
+
+def chat_with_memory(user_input):
+    """
+    Sends conversation history + current input to OpenAI.
+    """
+
+    memory = load_memory()
+
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful AI assistant with long-term memory."
+        }
+    ]
+
+    # Add stored memory
+    messages.extend(memory)
+
+    # Add latest user message
+    messages.append({
+        "role": "user",
+        "content": user_input
+    })
+
+    # Call OpenAI API
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=messages,
+        temperature=0.7
+    )
+
+    assistant_reply = response.choices[0].message.content
+
+    # Save conversation to memory
+    add_memory("user", user_input)
+    add_memory("assistant", assistant_reply)
+
+    return assistant_reply
+
+
+if __name__ == "__main__":
+    print("AI Assistant with Memory")
+    print("Type 'exit' to quit.\n")
+
+    while True:
+        user_input = input("You: ")
+
+        if user_input.lower() in ["exit", "quit"]:
+            break
+
+        reply = chat_with_memory(user_input)
+
+        print(f"\nAssistant: {reply}\n")
