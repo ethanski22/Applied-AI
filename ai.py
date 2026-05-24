@@ -1,5 +1,7 @@
+import logging
 import os
 import json
+import logger
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -87,10 +89,14 @@ def chat_with_memory(user_input):
     add_memory("user", user_input)
     add_memory("assistant", assistant_reply)
 
-    return assistant_reply
+    return assistant_reply, response.usage
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    
+    logger.info("Starting...")
     print("AI Assistant with Memory")
     print("Type 'exit' to quit.\n")
 
@@ -99,7 +105,17 @@ if __name__ == "__main__":
 
         if user_input.lower() in ["exit", "quit"]:
             break
-
-        reply = chat_with_memory(user_input)
+        
+        try:
+            reply, usage = chat_with_memory(user_input)
+        except Exception as e:
+            logger.error(f"Error during OpenAI API call: {e}")
+            print(f"Error occurred: {e}")
 
         print(f"\nAssistant: {reply}\n")
+        print(f"Usage: {usage}\n")
+        
+        
+        logger.info(f"User Input: {user_input}")
+        logger.info(f"Assistant Reply: {reply}")
+        logger.info(f"API Usage: {usage}")

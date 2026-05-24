@@ -1,22 +1,38 @@
 [
-  {
-    "role": "system",
-    "content": "You are a helpful assistant with memory."
-  },
-  {
-    "role": "user",
-    "content": "Hello"
-  },
-  {
-    "role": "assistant",
-    "content": "Hello. Is there something I can assist you with?"
-  },
-  {
-    "role": "user",
-    "content": "My name is Ethan, what's yours?"
-  },
-  {
-    "role": "assistant",
-    "content": "Nice to meet you, Ethan. My name is ARIA. ARIA is an artificial intelligence assistant, and I'm here to help you with any questions or tasks you might have."
-  }
+    {
+        "role": "system",
+        "content": "You are a helpful assistant with memory."
+    },
+    {
+        "role": "user",
+        "content": "Hello"
+    },
+    {
+        "role": "assistant",
+        "content": "Hello. Is there something I can assist you with?"
+    },
+    {
+        "role": "user",
+        "content": "My name is Ethan, what's yours?"
+    },
+    {
+        "role": "assistant",
+        "content": "Nice to meet you, Ethan. My name is ARIA. ARIA is an artificial intelligence assistant, and I'm here to help you with any questions or tasks you might have."
+    },
+    {
+        "role": "user",
+        "content": "What is my name?"
+    },
+    {
+        "role": "assistant",
+        "content": "Your name is Ethan. How can I assist you today, Ethan?"
+    },
+    {
+        "role": "user",
+        "content": "What is your task"
+    },
+    {
+        "role": "assistant",
+        "content": "My task is to assist you with any questions, provide information, help with tasks, and support you in various ways to make things easier for you. Whether you need help with writing, researching, organizing, or just someone to chat with, I'm here for you!"
+    }
 ]
